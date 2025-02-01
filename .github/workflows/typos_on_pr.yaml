@@ -25,13 +25,11 @@ jobs:
         id: typo-check
         run: |
           set -e
-          pwd
           touch tmpfile
-          md5sum typos.toml hunspell_whitelist
           ~/typos/typos --words --config=typos.toml | sort -u | hunspell -l -p hunspell_whitelist - > tmpfile
           if [ -s tmpfile ]; then
-            echo "Typos found:"
-            echo "(Fix, modify hunspell_whitelist, or add file type exception to typos.toml)"
+            echo "*Typos found:*"
+            echo "    (Can fix, modify hunspell_whitelist, or add file type exception to typos.toml)"
             cat tmpfile
             exit 1
           fi
