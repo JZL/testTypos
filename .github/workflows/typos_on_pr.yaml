@@ -1,19 +1,27 @@
-name: Spelling
+name: Typo Check
 
-permissions:
-  contents: read
-
-on: [pull_request]
-
-env:
-  CLICOLOR: 1
+on:
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  spelling:
-    name: Spell Check with Typos
+  check:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Actions Repository
-      uses: actions/checkout@v4
-    - name: Spell Check Repo
-      uses: crate-ci/typos@v1.29.5
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y typos hunspell
+      - name: Run typo check
+        id: typo-check
+        run: |
+          set -e
+          touch tmpfile
+          md5sum typos.toml hunspell_whitelist
+          typos --words --config=typos.toml | sort -u | hunspell -l -p hunspell_whitelist - > tmpfile
+          if [ -s tmpfile ]; then
+            echo "Typos found:"
+            cat tmpfile
+            exit 1
+          fi
