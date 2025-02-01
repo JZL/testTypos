@@ -7,8 +7,6 @@ check-file = false
 [type.cff]
 extend-glob = ["*.cff"]
 check-file = false
-
-[default.extend-words]
-    OPF      = "OPF"
-    FOM      = "FOM"
-    Missings = "Missings"
+[type.hunspellWhitelist]
+extend-glob = ["hunspell_whitelist"]
+check-file = false
