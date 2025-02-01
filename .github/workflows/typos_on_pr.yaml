@@ -17,19 +17,18 @@ jobs:
         id: typo-install
         run: |
           pwd
-          mkdir typos
-          cd typos
+          mkdir ~/typos
+          cd ~/typos
           wget -O typos.tar.gz https://github.com/crate-ci/typos/releases/download/v1.29.5/typos-v1.29.5-x86_64-unknown-linux-musl.tar.gz
           tar xavf typos.tar.gz
-          mv typos /tmp/typos
-          rm -rf typos
       - name: Run typo check
         id: typo-check
         run: |
           set -e
+          pwd
           touch tmpfile
           md5sum typos.toml hunspell_whitelist
-          /tmp/typos --words --config=typos.toml | sort -u | hunspell -l -p hunspell_whitelist - > tmpfile
+          ~/typos --words --config=typos.toml | sort -u | hunspell -l -p hunspell_whitelist - > tmpfile
           if [ -s tmpfile ]; then
             echo "Typos found:"
             echo "(Fix, modify hunspell_whitelist, or add file type exception to typos.toml)"
